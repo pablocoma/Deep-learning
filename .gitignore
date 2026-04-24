@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+.env/
+.venv/
+venv/
+
+Apuntes
+I Dense NNs, Convolutional NNs
+II Sequence Learning. RNNs and Transformer Deep ARs
+outputs/checkpoints/*
+outputs/metrics/*
+outputs/plots/*
+outputs/tables/*
+
+!outputs/checkpoints/.gitkeep
+!outputs/metrics/.gitkeep
+!outputs/plots/.gitkeep
+!outputs/tables/.gitkeep
