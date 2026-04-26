@@ -1,241 +1,226 @@
-# Project Context: Concept Bottleneck Models over Fashion-MNIST
+# Project Context: Concept Bottleneck Models on Fashion-MNIST
 
-## 🎯 Objective
+## Purpose
 
-This project studies Concept Bottleneck Models (CBMs) in a supervised Deep Learning setting.
+This file is the canonical project brief.
 
-The main goal is to compare standard neural networks with models that use human-interpretable intermediate concepts.
+Use it to understand:
 
-We want to analyze the trade-off between:
+- what the project is trying to achieve
+- which models must be implemented
+- which experiments matter
+- what "done" should look like
 
-- Performance (accuracy, AUROC)
-- Interpretability
-- Steerability (ability to control predictions via concepts)
+Implementation workflow and agent behavior belong in `AGENTS.md`.
 
----
+## Delivery Constraint
 
-## 🧵 Dataset
+The project should ultimately be deliverable as a notebook-oriented university submission.
 
-We use Fashion-MNIST:
+That affects the implementation strategy:
+
+- development can use `.py` files
+- the final artifact should be a clean notebook
+- the notebook should be able to present the full pipeline coherently
+
+The brief below defines the scientific and technical scope regardless of whether a step is first developed in Python files or later consolidated into a notebook.
+
+## Objective
+
+The project studies Concept Bottleneck Models (CBMs) in a supervised image classification setting using Fashion-MNIST.
+
+The main objective is to compare standard predictive performance with interpretability and steerability obtained through intermediate concepts.
+
+The central question is:
+
+Can an interpretable concept layer provide useful control and explanation without sacrificing too much predictive quality?
+
+## Dataset
+
+Fashion-MNIST:
 
 - 28x28 grayscale images
-- 10 classes:
-  0: T-shirt/top  
-  1: Trouser  
-  2: Pullover  
-  3: Dress  
-  4: Coat  
-  5: Sandal  
-  6: Shirt  
-  7: Sneaker  
-  8: Bag  
-  9: Ankle boot  
+- 10 classes
 
----
+Class mapping:
 
-## 🧩 Concepts
+- `0`: T-shirt/top
+- `1`: Trouser
+- `2`: Pullover
+- `3`: Dress
+- `4`: Coat
+- `5`: Sandal
+- `6`: Shirt
+- `7`: Sneaker
+- `8`: Bag
+- `9`: Ankle boot
 
-We define 8 binary concepts derived from class labels:
+## Concepts
 
-1. is_footwear → classes 5, 7, 9  
-2. is_closed_footwear → classes 7, 9  
-3. is_footwear_or_bag → classes 5, 7, 8, 9  
-4. has_sleeves → classes 0, 2, 3, 4, 6  
-5. has_collar → classes 4, 6  
-6. is_long_garment → classes 3, 4  
-7. is_outerwear_layer → classes 2, 4  
-8. is_legwear_or_footwear → classes 1, 5, 7, 9  
+The project uses 8 binary concepts derived deterministically from the class label:
 
-Concept labels are generated deterministically from the class label.
+1. `is_footwear` -> classes 5, 7, 9
+2. `is_closed_footwear` -> classes 7, 9
+3. `is_footwear_or_bag` -> classes 5, 7, 8, 9
+4. `has_sleeves` -> classes 0, 2, 3, 4, 6
+5. `has_collar` -> classes 4, 6
+6. `is_long_garment` -> classes 3, 4
+7. `is_outerwear_layer` -> classes 2, 4
+8. `is_legwear_or_footwear` -> classes 1, 5, 7, 9
 
----
+These concepts are shared across multiple classes and act as the interpretable bottleneck.
 
-## 🧠 Model families
+## Model Families
 
 ### 1. Baseline classifier
 
-Mapping:
+Mapping: `x -> y`
 
-x → y
-
-- Input: image
-- Output: class label (10 classes)
-- Architecture: small CNN
-
-This model serves as a performance reference.
-
----
+- input: image
+- output: 10 class logits
+- role: performance reference
 
 ### 2. Concept predictor
 
-Mapping:
+Mapping: `x -> c`
 
-x → c
-
-- Output: 8 binary concepts
-- Multi-label classification
-- Loss: BCEWithLogitsLoss
-
-This model evaluates how well concepts can be predicted from images.
-
----
+- input: image
+- output: 8 concept logits
+- task: multi-label prediction
+- loss: `BCEWithLogitsLoss`
 
 ### 3. Independent CBM
 
-Training procedure:
+Mapping: `x -> c -> y`
 
-Step 1: train x → c  
-Step 2: freeze concept model and train c → y  
+Training flow:
 
-Final model:
+1. train the concept predictor
+2. freeze it
+3. train a label predictor from predicted concepts
 
-x → ĉ → ŷ
+Main property:
 
-Key idea:
-- Concepts are learned independently from the final task.
-
-Pros:
-- High interpretability
-- Clean interventions
-
-Cons:
-- Errors in concept prediction propagate to final prediction
-
----
+- strong interpretability
+- concept errors can propagate to label prediction
 
 ### 4. Joint CBM
 
-Mapping:
+Mapping: `x -> c -> y`
 
-x → c → y
+Training objective:
 
-Training loss:
+`classification_loss + lambda_concept * concept_loss`
 
-Loss = classification_loss + λ * concept_loss
+Main property:
 
-Key idea:
-- Concepts and labels are learned jointly.
-
-Pros:
-- Better performance (usually)
-- End-to-end optimization
-
-Cons:
-- Concepts may lose semantic meaning
-- Lower interpretability
-
----
+- end-to-end optimization
+- concepts may become less semantically clean
 
 ### 5. Hybrid CBM
 
-Mapping:
+Mapping: `y = f(c) + s(x)`
 
-y = f(c) + s(x)
+- `f(c)`: concept-based path
+- `s(x)`: direct image-based side channel
 
-- f(c): concept-based prediction
-- s(x): direct image-to-label path (side channel)
+Main property:
 
-Final logits:
+- intended to balance interpretability and accuracy
 
-logits = f(c) + s(x)
+## Core Experiments
 
-Key idea:
-- Combine interpretability and performance
+### Model comparison
 
----
+Compare the baseline, concept predictor, Independent CBM, Joint CBM, and Hybrid CBM.
 
-## ⚡ Side-channel dropout experiment
+### Side-channel dropout
 
-We train Hybrid CBM with dropout applied ONLY to the side channel.
+For the Hybrid CBM, apply dropout only to the side channel and compare:
 
-Dropout probabilities:
-
-p ∈ {0.0, 0.1, 0.3, 0.5, 0.7, 0.9}
+`p in {0.0, 0.1, 0.3, 0.5, 0.7, 0.9}`
 
 Goal:
-- Study how much the model relies on concepts vs raw image features
 
-Expected behavior:
-- Low dropout → higher accuracy, less reliance on concepts
-- High dropout → lower accuracy, more reliance on concepts
+- measure reliance on direct image features versus concepts
 
----
+### Concept interventions
 
-## 🎮 Steerability (Concept Interventions)
+For a predicted concept vector:
 
-Procedure:
+1. flip one concept
+2. recompute the final prediction
+3. measure the prediction change
 
-1. Predict concepts for an input image
-2. Flip one concept (0 ↔ 1)
-3. Recompute class prediction
+Goal:
 
-Metrics:
+- quantify steerability
+- identify which concepts most influence the model
 
-- Change in prediction probability
-- Percentage of label changes
-- Ranking of concepts by influence
+## Evaluation
 
-Interpretation:
+Classification metrics:
 
-- Measures how much each concept affects predictions
-- Higher influence → more controllable model
+- accuracy
+- AUROC using one-vs-rest
 
----
+Concept metrics:
 
-## ⚖️ Expected trade-offs
+- per-concept accuracy
+- per-concept F1
+- macro averages
 
-| Model | Performance | Interpretability | Steerability |
-|------|------------|----------------|--------------|
-| Baseline | High | Low | Low |
-| Independent CBM | Medium | High | High |
-| Joint CBM | High | Medium | Medium |
-| Hybrid CBM | High | Medium | Medium |
+Intervention metrics:
 
----
+- change in prediction probability
+- percentage of label changes
+- concept influence ranking
 
-## 🧪 Training setup
+## Training Expectations
 
-- Train / validation / test split
-- Early stopping based on validation loss
-- Small CNN architecture
-- Standard PyTorch training loop
+The implementation should support:
 
----
+- train/validation/test splits
+- reproducible seeds
+- early stopping based on validation loss
+- saving outputs for later analysis
 
-## 📊 Evaluation
+## Outputs
 
-### Classification
-- Accuracy
-- AUROC (one-vs-rest)
+Generated artifacts should be organized under:
 
-### Concepts
-- Per-concept accuracy
-- Per-concept F1
-- Macro averages
+- `outputs/checkpoints/`
+- `outputs/metrics/`
+- `outputs/plots/`
+- `outputs/tables/`
 
----
+## Definition of Done
 
-## 🚀 Optional extension
+At project completion, the work should support both of these views:
 
-If time allows:
+1. a development view:
+   the code is clear enough to iterate on in `.py` files
+2. a submission view:
+   the final notebook is coherent, readable, and sufficient for course delivery
 
-- Hyperparameter tuning (e.g. learning rate, dropout, λ in Joint CBM)
-- Focus on improving baseline or Hybrid CBM
+The final notebook should include:
 
-This is not the main objective.
+- problem framing
+- dataset and concept setup
+- model training and evaluation
+- intervention analysis
+- plots and conclusions
 
----
+## Scope Boundary
 
-## 💡 Key idea of the project
+This is a course project.
 
-The core question is:
+The priority is:
 
-Can we build models that are both accurate and interpretable?
+- correctness
+- readability
+- interpretable experimentation
 
-CBMs force the model to reason through human-understandable concepts.
+The project does not require advanced infrastructure or research-scale engineering.
 
-This allows:
-
-- Better explanations
-- Direct control over predictions
-- Insight into model behavior
+Optional extensions are acceptable only after the core pipeline is complete.

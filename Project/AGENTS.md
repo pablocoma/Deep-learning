@@ -1,178 +1,164 @@
 # AGENTS.md
 
-## 🔒 Scope of work
+## Scope
 
-- Work ONLY inside the `Project/` folder.
-- Do NOT modify any files outside `Project/` unless explicitly instructed.
-- Do NOT modify course notes or lab notebooks.
+- Work only inside `Project/`.
+- Do not modify course notes or files outside `Project/` unless explicitly instructed.
+- Treat this repository as a project-only workspace.
 
----
+## Role of This File
 
-## 🎯 Project goal
+This file defines how work should be carried out.
 
-This is a Deep Learning course project on Concept Bottleneck Models (CBMs) using Fashion-MNIST.
+Project requirements live in `context.md`.
+When there is any ambiguity, use `context.md` as the source of truth for project scope and use this file as the source of truth for implementation style.
 
-The objective is to compare:
+## Submission-Oriented Workflow
 
-1. Baseline classifier: x → y
-2. Concept predictor: x → c
-3. Independent CBM: train x → c, then train c → y
-4. Joint CBM: train x → c → y with combined loss
-5. Hybrid CBM: y = f(c) + s(x)
+The final deliverable is expected to be notebook-first.
 
-The project must analyze:
+Therefore the working approach should be:
 
-- Performance (accuracy, AUROC)
-- Interpretability
-- Steerability (concept interventions)
+1. build and validate the project with `.py` files
+2. keep the reusable logic organized and simple
+3. consolidate the stable implementation into a final submission notebook
 
----
+Do not treat the final notebook as an afterthought.
+The notebook is part of the target architecture from the beginning.
 
-## ⚠️ Critical working rules
+## Operating Principles
 
-### 1. Work in small steps
-- Implement ONLY what is explicitly requested.
-- Do NOT implement future phases.
-- Do NOT anticipate upcoming tasks.
+### 1. Build incrementally
 
-### 2. Keep it simple
-- Code must be simple, readable, and aligned with course labs.
-- Avoid over-engineering.
-- Avoid unnecessary abstractions.
+- Implement only the requested step.
+- Avoid jumping ahead to future phases.
+- Keep the repository runnable after each meaningful change.
 
-### 3. Stay within course level
-Use only:
-- PyTorch (`nn.Module`, `DataLoader`, training loops)
-- Small CNN architectures
-- Standard losses (CrossEntropyLoss, BCEWithLogitsLoss)
-- Dropout (required in Hybrid CBM)
-- Optional BatchNorm (simple usage only)
+### 2. Prefer simple solutions
 
-Do NOT use:
+- Favor readability over abstraction.
+- Use standard PyTorch patterns.
+- Keep code close to course level.
+
+### 3. Match the intended structure
+
+Use the repository as follows:
+
+- `src/` for reusable code
+- `scripts/` for a very small number of development runners
+- `notebooks/exploration/` for optional experimentation
+- `notebooks/submission/` for the final polished notebook
+- `outputs/` for generated artifacts
+- `report/figures/` only if a separate written report is later needed
+
+If a requested feature needs new files, place them according to this structure.
+
+## Technical Constraints
+
+Preferred stack:
+
+- PyTorch
+- torchvision
+- NumPy
+- pandas
+- matplotlib / seaborn
+- scikit-learn
+
+Avoid unless explicitly requested:
+
 - PyTorch Lightning
-- Hydra or advanced config systems
-- Weights & Biases
-- Optuna (unless explicitly requested later)
-- Pretrained models or transfer learning
-- Complex architectures
+- Hydra or advanced config frameworks
+- experiment tracking platforms
+- pretrained foundation models
+- overly complex architectures
 
----
+## Model-Level Expectations
 
-## 🧠 Model requirements
+The project is expected to support:
 
-### Baseline
-- Input: image
-- Output: 10 logits
-- Loss: CrossEntropyLoss
+1. baseline classifier
+2. concept predictor
+3. Independent CBM
+4. Joint CBM
+5. Hybrid CBM
 
-### Concept predictor
-- Input: image
-- Output: 8 concept logits
-- Loss: BCEWithLogitsLoss
-- Multi-label classification
+Follow the definitions in `context.md` when implementing any of these models.
 
-### Independent CBM
-- Step 1: train x → c
-- Step 2: train c → y
-- Final pipeline: x → ĉ → ŷ
+## Code Style
 
-### Joint CBM
-- Architecture: x → c → y
-- Loss:
-  total_loss = classification_loss + lambda_concept * concept_loss
+- Keep modules small and direct.
+- Prefer explicit training loops over framework magic.
+- Add helper functions only when they reduce repeated logic.
+- Avoid premature generalization.
+- Use clear names that reflect the project vocabulary: concepts, logits, interventions, side channel, and so on.
 
-### Hybrid CBM
-- Two paths:
-  - Concept path: f(c)
-  - Direct path: s(x)
-- Final logits:
-  logits = f(c) + s(x)
-- Apply dropout ONLY to the side channel s(x)
+## Experiment Discipline
 
----
+When adding scripts or utilities:
 
-## 📊 Metrics
+- make inputs and outputs obvious
+- keep the number of scripts low
+- save artifacts in the correct `outputs/` subdirectory
+- keep experiment behavior reproducible
+- avoid hidden side effects
 
-### Classification
-- Accuracy
-- AUROC (one-vs-rest)
+If a script trains a model, it should eventually make it easy to identify:
 
-### Concepts
-- Accuracy per concept
-- F1 per concept
-- Macro-average
+- which model was trained
+- with which settings
+- where metrics and checkpoints were saved
 
----
+## Documentation Discipline
 
-## 🎮 Interventions
+When the implementation evolves:
 
-- Predict concepts
-- Flip one concept (0 ↔ 1)
-- Recompute prediction
-- Measure:
-  - Change in probability
-  - % of label changes
-- Rank concepts by influence
+- keep `README.md` aligned with the real repository state
+- update `context.md` only if project scope changes
+- update `AGENTS.md` only if the working rules or structure change
+- keep the submission strategy explicit
 
----
+Do not describe code as implemented if it does not exist yet.
 
-## 🧪 Training setup
+## Notebook Consolidation Rule
 
-- Use train / validation / test split
-- Use early stopping based on validation loss
-- Use reproducible seeds
-- Save metrics and results
+As the project stabilizes:
 
----
+- move from many experimental fragments toward one coherent notebook
+- avoid copying inconsistent versions of the same logic into notebook cells
+- consolidate only after the Python implementation is understood and working
 
-## 📁 Outputs
+The final notebook should be readable in course style:
 
-- Save metrics in `outputs/metrics/`
-- Save plots in `outputs/plots/`
-- Save checkpoints in `outputs/checkpoints/`
+1. introduction
+2. dataset and concepts
+3. models
+4. training
+5. evaluation
+6. interventions
+7. conclusions
 
----
+## Default Development Path
 
-## 🧭 Development workflow
+Unless the user asks for a different order, the sensible build sequence is:
 
-When making changes:
+1. dataset and concept-label utilities
+2. baseline classifier
+3. concept predictor
+4. Independent CBM
+5. Joint CBM
+6. Hybrid CBM
+7. dropout experiment
+8. intervention analysis
+9. final notebook consolidation
 
-1. Inspect existing files first
-2. Make minimal modifications
-3. Keep code runnable
-4. Explain what changed
-5. Suggest how to test it
+This is a planning reference, not a mandate to implement multiple phases at once.
 
----
+## Expected Behavior When Editing
 
-## 🚫 What NOT to do
+Before changing code:
 
-- Do NOT rewrite large parts of the project unnecessarily
-- Do NOT introduce new frameworks
-- Do NOT add complexity beyond course level
-- Do NOT implement multiple features at once
-- Do NOT ignore instructions in this file
-
----
-
-## 🧩 Optional extensions (ONLY if explicitly requested)
-
-- Small hyperparameter tuning (e.g. Optuna)
-- Comparison between different lambda values in Joint CBM
-- Additional plots
-
-These are NOT part of the core implementation.
-
----
-
-## ✅ Expected usage
-
-The project should be runnable via scripts such as:
-
-python scripts/train_baseline.py  
-python scripts/train_concept_predictor.py  
-python scripts/train_cbm_independent.py  
-python scripts/train_cbm_joint.py  
-python scripts/train_hybrid.py  
-python scripts/run_dropout_experiment.py  
-python scripts/run_interventions.py
+1. inspect the relevant files
+2. make the smallest coherent change
+3. preserve consistency with `context.md`
+4. keep documentation honest
+5. explain how the change should be tested
