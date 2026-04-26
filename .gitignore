@@ -9,6 +9,7 @@ venv/
 Apuntes
 I Dense NNs, Convolutional NNs
 II Sequence Learning. RNNs and Transformer Deep ARs
+III Deep Density Estimation
 outputs/checkpoints/*
 outputs/metrics/*
 outputs/plots/*

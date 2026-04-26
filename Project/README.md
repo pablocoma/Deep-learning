@@ -1,48 +1,77 @@
-# Fashion-MNIST Concept Bottleneck Models
+# Concept Bottleneck Models on Fashion-MNIST
 
-This folder contains the course project for studying Concept Bottleneck Models (CBMs) on Fashion-MNIST with PyTorch.
+## 📘 Overview
 
-The current state is a scaffold only. The repository structure is prepared for later implementation of:
+This project studies Concept Bottleneck Models (CBMs) in a supervised Deep Learning setting using Fashion-MNIST.
 
-1. Baseline classifier: `x -> y`
-2. Concept predictor: `x -> c`
-3. Independent CBM: `x -> c`, then `c -> y`
-4. Joint CBM: `x -> c -> y`
-5. Hybrid CBM with side channel: `f(c) + s(x)`
+The goal is to compare standard neural networks with concept-based models and analyze the trade-off between:
 
-## Structure
+- Performance (accuracy, AUROC)
+- Interpretability
+- Steerability (control via concept interventions)
 
-- `src/`: source code
-- `scripts/`: command-line entry points and experiment runners
-- `notebooks/`: exploratory notebooks
-- `outputs/`: generated artifacts
-- `report/`: report materials
+---
 
-## Planned Training Style
+## 🧵 Dataset
 
-The implementation will follow the course conventions:
+Fashion-MNIST:
 
-- PyTorch `nn.Module`
-- `DataLoader`
-- standard optimizer training loops
-- `CrossEntropyLoss` for labels
-- `BCEWithLogitsLoss` for concepts
+- 28×28 grayscale images
+- 10 clothing classes
 
-## Outputs
+---
 
-Generated artifacts should be written to:
+## 🧩 Concepts
 
-- `outputs/checkpoints/`
-- `outputs/metrics/`
-- `outputs/plots/`
-- `outputs/tables/`
+We define 8 binary concepts derived from class labels, such as:
 
-Figures for the report should go in:
+- is_footwear
+- has_sleeves
+- is_long_garment
+- etc.
 
-- `report/figures/`
+These concepts are shared across classes and are used as an intermediate representation.
 
-## Notes
+---
 
-- Keep all work inside `Project/`
-- Do not implement the side-channel dropout experiment yet
-- Preferred GitHub account for project work: `pablocoma`
+## 🧠 Models implemented
+
+1. **Baseline classifier**  
+   x → y
+
+2. **Concept predictor**  
+   x → c
+
+3. **Independent CBM**  
+   x → c → y (trained in two stages)
+
+4. **Joint CBM**  
+   x → c → y (trained end-to-end)
+
+5. **Hybrid CBM**  
+   y = f(c) + s(x)
+
+---
+
+## ⚡ Experiments
+
+### 1. Model comparison
+Compare performance and interpretability across models.
+
+### 2. Side-channel dropout (Hybrid CBM)
+Train with:
+
+p ∈ {0.0, 0.1, 0.3, 0.5, 0.7, 0.9}
+
+Analyze how performance changes with reliance on concepts.
+
+### 3. Concept interventions
+Flip individual concepts and observe:
+
+- Change in prediction probabilities
+- Percentage of label changes
+- Most influential concepts
+
+---
+
+## 📁 Project structure
