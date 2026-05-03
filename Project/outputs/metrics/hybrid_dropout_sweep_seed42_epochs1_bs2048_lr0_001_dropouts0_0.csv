@@ -1,0 +1,2 @@
+side_dropout,accuracy,auroc_ovr,macro_concept_accuracy,macro_concept_f1,epochs_trained,best_val_loss
+0.0,0.7738,0.9720044222222223,0.9261874999999999,0.7864433136396036,1,0.927540922164917

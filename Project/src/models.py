@@ -74,14 +74,19 @@ class BaselineClassifier(nn.Module):
 class ConceptPredictor(nn.Module):
     """Concept model: image x -> concept logits c."""
 
-    def __init__(self, num_concepts=NUM_CONCEPTS):
+    def __init__(self, num_concepts=NUM_CONCEPTS, dropout=0.3):
         super().__init__()
+
+        if dropout > 0:
+            dropout_layer = nn.Dropout(p=dropout)
+        else:
+            dropout_layer = nn.Identity()
 
         self.backbone = SmallCNNBackbone()
         self.concept_head = nn.Sequential(
             nn.Linear(self.backbone.output_size, 64),
             nn.ReLU(),
-            nn.Dropout(p=0.3),
+            dropout_layer,
             nn.Linear(64, num_concepts),
         )
 
@@ -153,7 +158,10 @@ class HybridCBM(nn.Module):
     ):
         super().__init__()
 
-        self.concept_predictor = ConceptPredictor(num_concepts=num_concepts)
+        self.concept_predictor = ConceptPredictor(
+            num_concepts=num_concepts,
+            dropout=0.0,
+        )
         self.concept_label_head = ConceptLabelHead(
             num_concepts=num_concepts,
             num_classes=num_classes,
@@ -171,22 +179,25 @@ class HybridCBM(nn.Module):
         concepts_for_label = torch.sigmoid(concept_logits)
         # concepts_for_label: (batch, 8)
 
-        concept_class_logits = self.concept_label_head(concepts_for_label)
-        # concept_class_logits: (batch, 10)
+        concept_path_logits = self.concept_label_head(concepts_for_label)
+        # concept_path_logits: (batch, 10)
 
         side_features = self.side_backbone(x)
         # side_features: (batch, 32 * 7 * 7)
 
         side_features = self.side_dropout(side_features)
-        side_class_logits = self.side_head(side_features)
-        # side_class_logits: (batch, 10)
+        side_channel_logits = self.side_head(side_features)
+        # side_channel_logits: (batch, 10)
 
-        class_logits = concept_class_logits + side_class_logits
-        # class_logits: (batch, 10)
+        final_logits = concept_path_logits + side_channel_logits
+        # final_logits: (batch, 10)
 
         return {
             "concept_logits": concept_logits,
-            "concept_class_logits": concept_class_logits,
-            "side_class_logits": side_class_logits,
-            "class_logits": class_logits,
+            "concept_path_logits": concept_path_logits,
+            "side_channel_logits": side_channel_logits,
+            "concept_class_logits": concept_path_logits,
+            "side_class_logits": side_channel_logits,
+            "final_logits": final_logits,
+            "class_logits": final_logits,
         }
