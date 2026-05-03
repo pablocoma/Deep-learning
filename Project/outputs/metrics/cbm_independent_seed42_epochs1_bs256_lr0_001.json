@@ -1,0 +1,84 @@
+{
+  "run_name": "cbm_independent_seed42_epochs1_bs256_lr0_001",
+  "model": "cbm_independent",
+  "device": "cpu",
+  "args": {
+    "model": "cbm_independent",
+    "epochs": 1,
+    "batch_size": 256,
+    "lr": 0.001,
+    "seed": 42
+  },
+  "early_stopping_patience": 3,
+  "class_names": [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot"
+  ],
+  "history": {
+    "concept_predictor": {
+      "train_loss": [
+        0.14260960193475086
+      ],
+      "val_loss": [
+        0.07771838907400767
+      ],
+      "best_val_loss": 0.07771838907400767,
+      "epochs_trained": 1
+    },
+    "label_head": {
+      "train_loss": [
+        1.8806159845987955
+      ],
+      "val_loss": [
+        1.3453698956171671
+      ],
+      "best_val_loss": 1.3453698956171671,
+      "epochs_trained": 1
+    }
+  },
+  "test_metrics": {
+    "accuracy": 0.7055,
+    "auroc_ovr": 0.9661455444444444,
+    "concept_accuracy_per_concept": [
+      0.9989,
+      0.9893,
+      0.9935,
+      0.987,
+      0.9102,
+      0.9287,
+      0.9448,
+      0.9923
+    ],
+    "concept_f1_per_concept": [
+      0.998167582875229,
+      0.973612823674476,
+      0.9918515732731603,
+      0.9870980547836443,
+      0.781827016520894,
+      0.8179729384733214,
+      0.86608442503639,
+      0.9903083700440528
+    ],
+    "macro_concept_accuracy": 0.9680875,
+    "macro_concept_f1": 0.925865348085146,
+    "concept_names": [
+      "is_footwear",
+      "is_closed_footwear",
+      "is_footwear_or_bag",
+      "has_sleeves",
+      "has_collar",
+      "is_long_garment",
+      "is_outerwear_layer",
+      "is_legwear_or_footwear"
+    ]
+  },
+  "checkpoint_path": "/Users/valbu/Desktop/Master/IV semicuatri/Deep Learning/Project/outputs/checkpoints/cbm_independent_seed42_epochs1_bs256_lr0_001.pt"
+}

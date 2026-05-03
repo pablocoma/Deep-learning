@@ -1,0 +1,2 @@
+trial,model,objective,objective_value,learning_rate,lambda_concept,dropout,head_hidden_dim,epochs_trained,best_val_loss,val_accuracy,val_auroc_ovr,val_macro_concept_accuracy,val_macro_concept_f1
+1,cbm_joint,accuracy,0.199,0.003,0.3,0.3,16,1,2.2498130938212078,0.199,0.8814527751181703,0.9133333333333333,0.8170958411341811

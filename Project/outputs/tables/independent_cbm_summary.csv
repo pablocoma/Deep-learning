@@ -1,0 +1,2 @@
+source_file,run_name,model,model_label,seed,epochs,batch_size,lr,lambda_concept,side_dropout,early_stopping_patience,epochs_trained,best_val_loss,checkpoint_path,accuracy,auroc_ovr,macro_concept_accuracy,macro_concept_f1
+cbm_independent_seed42_epochs1_bs256_lr0_001.json,cbm_independent_seed42_epochs1_bs256_lr0_001,cbm_independent,Independent CBM,42,1,256,0.001,,,3,1,0.07771838907400767,/Users/valbu/Desktop/Master/IV semicuatri/Deep Learning/Project/outputs/checkpoints/cbm_independent_seed42_epochs1_bs256_lr0_001.pt,0.7055,0.9661455444444444,0.9680875,0.925865348085146

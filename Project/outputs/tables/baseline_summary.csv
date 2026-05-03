@@ -1,0 +1,2 @@
+source_file,run_name,model,model_label,seed,epochs,batch_size,lr,lambda_concept,side_dropout,early_stopping_patience,epochs_trained,best_val_loss,checkpoint_path,accuracy,auroc_ovr
+baseline_seed42_epochs10_bs64_lr0_001.json,baseline_seed42_epochs10_bs64_lr0_001,baseline,Baseline,42,10,64,0.001,,,3,10,0.23294460486869017,/Users/valbu/Desktop/Master/IV semicuatri/Deep Learning/Project/outputs/checkpoints/baseline_seed42_epochs10_bs64_lr0_001.pt,0.9092,0.9943823555555555
