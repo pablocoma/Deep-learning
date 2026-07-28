@@ -1,2 +1,0 @@
-source_file,run_name,model,model_label,seed,epochs,batch_size,lr,lambda_concept,side_dropout,early_stopping_patience,epochs_trained,best_val_loss,checkpoint_path,macro_concept_accuracy,macro_concept_f1
-concept_seed42_epochs10_bs64_lr0_001.json,concept_seed42_epochs10_bs64_lr0_001,concept,Concept predictor,42,10,64,0.001,,,3,10,0.043602217867970465,/Users/valbu/Desktop/Master/IV semicuatri/Deep Learning/Project/outputs/checkpoints/concept_seed42_epochs10_bs64_lr0_001.pt,0.9818374999999999,0.9568257952731716

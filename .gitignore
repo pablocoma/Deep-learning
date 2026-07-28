@@ -5,17 +5,29 @@ __pycache__/
 .env/
 .venv/
 venv/
+.pytest_cache/
+.ruff_cache/
 
-Apuntes
-I Dense NNs, Convolutional NNs
-II Sequence Learning. RNNs and Transformer Deep ARs
-III Deep Density Estimation
-outputs/checkpoints/*
-outputs/metrics/*
-outputs/plots/*
-outputs/tables/*
+# Course material outside the portfolio project
+/Apuntes/
+/I Dense NNs, Convolutional NNs/
+/II Sequence Learning. RNNs and Transformer Deep ARs/
+/III Deep Density Estimation/
+/IV Introduction to NLP/
 
-!outputs/checkpoints/.gitkeep
-!outputs/metrics/.gitkeep
-!outputs/plots/.gitkeep
-!outputs/tables/.gitkeep
+# Downloaded datasets and generated experiment artifacts
+/data/
+/Project/data/
+/Project/outputs/*
+!/Project/outputs/checkpoints/
+!/Project/outputs/metrics/
+!/Project/outputs/plots/
+!/Project/outputs/tables/
+/Project/outputs/checkpoints/*
+/Project/outputs/metrics/*
+/Project/outputs/plots/*
+/Project/outputs/tables/*
+!/Project/outputs/checkpoints/.gitkeep
+!/Project/outputs/metrics/.gitkeep
+!/Project/outputs/plots/.gitkeep
+!/Project/outputs/tables/.gitkeep
