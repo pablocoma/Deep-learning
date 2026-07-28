@@ -1,0 +1,5 @@
+model,accuracy,auroc_ovr,macro_concept_f1,epochs_trained
+Joint CBM,0.931,0.995,0.966,86
+Hybrid CBM,0.928,0.996,0.964,55
+Baseline CNN,0.925,0.996,,44
+Independent CBM,0.838,0.987,0.967,37

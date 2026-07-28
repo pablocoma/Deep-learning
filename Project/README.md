@@ -1,137 +1,85 @@
-# Concept Bottleneck Models on Fashion-MNIST
+# Technical guide
 
-## Overview
+This directory contains the implementation and final artifacts for the
+Fashion-MNIST Concept Bottleneck Model study.
 
-This repository contains a Deep Learning course project on Concept Bottleneck Models (CBMs) using Fashion-MNIST.
+For the project overview and headline results, start at the
+[repository README](../README.md).
 
-The project compares standard image classifiers with concept-based models and studies the trade-off between:
+## Research question
 
-- predictive performance
-- interpretability
-- steerability through concept interventions
+Can an interpretable concept layer provide useful control and explanation
+without sacrificing too much predictive quality?
 
-## Delivery Strategy
+Eight binary concepts are assigned to Fashion-MNIST classes. The experiment
+compares five model families:
 
-The final university deliverable should be a notebook-first submission.
+1. **Baseline classifier**: `x -> y`
+2. **Concept predictor**: `x -> c`
+3. **Independent CBM**: `x -> c -> y`, trained in two stages
+4. **Joint CBM**: `x -> c -> y`, trained end-to-end
+5. **Hybrid CBM**: `y = f(c) + s(x)`, with a direct image side channel
 
-The intended workflow is:
-
-1. develop and validate the project with `.py` files
-2. keep the reusable logic clean and modular
-3. consolidate the final pipeline into a polished notebook for submission
-
-This means the notebook is the final presentation layer, while the Python files are the development layer used to reach a stable implementation.
-
-## Project Goal
-
-The core question is:
-
-Can we build models that remain accurate while exposing an interpretable concept layer that can be inspected and manipulated?
-
-The planned model families are:
-
-1. Baseline classifier: `x -> y`
-2. Concept predictor: `x -> c`
-3. Independent CBM: `x -> c -> y` trained in two stages
-4. Joint CBM: `x -> c -> y` trained end-to-end
-5. Hybrid CBM: `y = f(c) + s(x)`
-
-## Dataset
-
-The project uses Fashion-MNIST:
-
-- 28x28 grayscale images
-- 10 classes
-
-Concept labels are derived deterministically from the class labels.
-
-## Recommended Repository Structure
+## Repository structure
 
 ```text
 Project/
-├── AGENTS.md
-├── README.md
-├── context.md
-├── requirements.txt
-├── notebooks/
-│   ├── exploration/
-│   └── submission/
-├── outputs/
-│   ├── checkpoints/
-│   ├── metrics/
-│   ├── plots/
-│   └── tables/
-├── report/
-│   └── figures/
+├── notebooks/submission/CBMs_project.ipynb
+├── report/deep_learning.pdf
+├── results/
 ├── scripts/
-└── src/
+├── src/
+├── outputs/
+├── context.md
+└── requirements.txt
 ```
 
-Use each area as follows:
+- `notebooks/submission/`: executed, self-contained course deliverable.
+- `report/`: compact final report.
+- `results/`: curated tables from the final notebook and report.
+- `src/`: reusable dataset, model, training, evaluation and intervention code.
+- `scripts/`: experiment, HPO, dropout and intervention runners.
+- `outputs/`: local generated artifacts; ignored by Git except placeholders.
 
-- `src/`: reusable implementation code
-- `scripts/`: a very small number of runnable development entrypoints
-- `notebooks/exploration/`: optional scratch notebooks during development
-- `notebooks/submission/`: the final polished submission notebook
-- `outputs/`: generated artifacts from experiments
-- `report/figures/`: optional figures if you later write a separate report
-
-## Development Schema
-
-The project should not grow into many standalone scripts.
-
-The target is:
-
-- most logic lives in `src/`
-- only a few development runners live in `scripts/`
-- the final notebook reuses the stabilized logic and then becomes the submission artifact
-
-Good examples of development runners are:
-
-- one experiment runner for training and evaluation
-- one intervention runner
-
-The final notebook should then present:
-
-1. the project objective
-2. dataset and concept construction
-3. model definitions
-4. training and evaluation
-5. intervention analysis
-6. results and conclusions
-
-## Current Repository Status
-
-This repository currently contains the scaffold and documentation, not the finished implementation.
-
-What is expected to be added during development:
-
-- dataset utilities
-- concept construction utilities
-- model definitions
-- training and evaluation code
-- intervention analysis
-- one final submission notebook
-
-## Environment Setup
-
-Create and activate a virtual environment, then install dependencies:
+## Setup
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-## Working Principle
+The code supports CPU, CUDA and Apple Metal Performance Shaders where
+available. Fashion-MNIST is downloaded automatically.
 
-During development, prioritize clarity and correctness over convenience in the notebook.
+## Run development checks
 
-In practice:
+From this directory:
 
-- prototype and debug with Python modules
-- keep scripts minimal
-- avoid duplicating core logic across files
-- only consolidate into the final notebook once the implementation is stable
+```bash
+python scripts/check_models.py
+python -m compileall -q src scripts
+```
 
-This keeps the development process manageable while still matching the notebook-oriented course style at submission time.
+## Run experiments
+
+The reusable modules and command-line runners support the development workflow:
+
+```bash
+python scripts/run_experiment.py --help
+python scripts/run_dropout_sweep.py --help
+python scripts/run_interventions.py --help
+```
+
+Generated checkpoints, metrics, plots and summary tables are written below
+`outputs/` and deliberately excluded from version control.
+
+## Final artifacts and provenance
+
+The final notebook is the canonical executed deliverable. The PDF report
+summarises the same model comparison, side-channel dropout experiment and
+concept interventions. Curated CSV files in `results/` make the headline
+numbers easy to inspect without committing raw checkpoints or local caches.
+
+The final reported experiments use a fixed seed of 42. Development outputs from
+short smoke runs are not included in this portfolio branch.
